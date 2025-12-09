@@ -68,6 +68,18 @@ jobs:
       run: |
         python scripts/generate_report.py
     
+    - name: Prepare GitHub Pages deployment
+      run: |
+        touch reports/.nojekyll
+        # Create a simple redirect page as README
+        cat > reports/README.md << 'EOF'
+        <meta http-equiv="refresh" content="0; url=./index.html">
+        
+        # Redirecting to Report...
+        
+        If you are not redirected automatically, [click here](./index.html).
+        EOF
+    
     - name: Upload report artifacts
       uses: actions/upload-artifact@v4
       with:
