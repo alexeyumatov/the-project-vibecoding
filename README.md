@@ -182,15 +182,15 @@ The system generates professional visualizations including:
 
 ### Grade Distribution
 
-![Grade Distribution Example](https://via.placeholder.com/800x400/667eea/ffffff?text=Grade+Distribution)
+![Grade Distribution Example](reports/grade_distribution.png)
 
 ### Correlation Heatmap
 
-![Correlation Heatmap Example](https://via.placeholder.com/800x600/764ba2/ffffff?text=Correlation+Heatmap)
+![Correlation Heatmap Example](reports/correlation_heatmap.png)
 
 ### At-Risk Comparison
 
-![Risk Comparison Example](https://via.placeholder.com/800x600/e74c3c/ffffff?text=At-Risk+Analysis)
+![Risk Comparison Example](reports/risk_comparison.png)
 
 ## 🔧 Advanced Usage
 
