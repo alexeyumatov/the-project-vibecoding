@@ -1,0 +1,87 @@
+name: Generate Weekly Analytics Report
+
+on:
+  # Run every Monday at 9:00 AM UTC
+  schedule:
+    - cron: '0 9 * * 1'
+  
+  # Allow manual trigger with custom parameters
+  workflow_dispatch:
+    inputs:
+      n_students:
+        description: 'Number of students to generate'
+        required: false
+        default: '100'
+      report_type:
+        description: 'Type of report'
+        required: false
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - summary
+          - at-risk-only
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Generate student data
+      run: |
+        python -m src.main \
+          --generate-data \
+          --n-students ${{ github.event.inputs.n_students || '100' }}
+    
+    - name: Run analysis
+      run: |
+        python -m src.main \
+          --analyze \
+          --input-file data/processed/student_data.csv
+    
+    - name: Train prediction model
+      run: |
+        python -m src.main \
+          --train-model \
+          --input-file data/processed/student_data.csv
+    
+    - name: Generate visualizations
+      run: |
+        python -m src.main \
+          --visualize \
+          --input-file data/processed/student_data.csv \
+          --output-dir reports
+    
+    - name: Generate HTML report
+      run: |
+        python scripts/generate_report.py
+    
+    - name: Upload report artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: analytics-report-${{ github.run_number }}
+        path: |
+          reports/*.png
+          reports/*.html
+          data/processed/student_data.csv
+        retention-days: 30
+    
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./reports
+        publish_branch: gh-pages
+        commit_message: 'Update analytics report - ${{ github.run_number }}'

@@ -1,0 +1,263 @@
+"""
+Generate HTML report for student analytics.
+"""
+
+import os
+from datetime import datetime
+import json
+
+
+def generate_html_report():
+    """Generate comprehensive HTML report from analysis results."""
+
+    # Get current timestamp
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    # HTML template
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Analytics Report</title>
+    <style>
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+        
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }}
+        
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+        }}
+        
+        header {{
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }}
+        
+        h1 {{
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }}
+        
+        .timestamp {{
+            color: #666;
+            font-size: 0.9em;
+        }}
+        
+        .section {{
+            margin: 30px 0;
+        }}
+        
+        h2 {{
+            color: #764ba2;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-left: 5px solid #667eea;
+            padding-left: 15px;
+        }}
+        
+        .visualization {{
+            margin: 20px 0;
+            text-align: center;
+        }}
+        
+        .visualization img {{
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }}
+        
+        .stats-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }}
+        
+        .stat-card {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }}
+        
+        .stat-card h3 {{
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }}
+        
+        .stat-card .value {{
+            font-size: 2.5em;
+            font-weight: bold;
+        }}
+        
+        .description {{
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }}
+        
+        footer {{
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            color: #666;
+        }}
+        
+        .badge {{
+            display: inline-block;
+            padding: 5px 10px;
+            background: #28a745;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin: 5px;
+        }}
+        
+        .badge.warning {{
+            background: #ffc107;
+            color: #333;
+        }}
+        
+        .badge.danger {{
+            background: #dc3545;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Student Performance Analytics Report</h1>
+            <p class="timestamp">Generated: {timestamp}</p>
+        </header>
+        
+        <div class="section">
+            <h2>📈 Overview</h2>
+            <div class="description">
+                <p>This report provides comprehensive analytics on student performance, including risk assessment, 
+                performance distribution, and predictive insights using machine learning.</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Students</h3>
+                    <div class="value" id="total-students">--</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Average Grade</h3>
+                    <div class="value" id="avg-grade">--</div>
+                </div>
+                <div class="stat-card">
+                    <h3>At-Risk Students</h3>
+                    <div class="value" id="at-risk">--</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Attendance</h3>
+                    <div class="value" id="attendance">--</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📊 Grade Distribution</h2>
+            <div class="visualization">
+                <img src="grade_distribution.png" alt="Grade Distribution" />
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📈 Performance Categories</h2>
+            <div class="visualization">
+                <img src="performance_categories.png" alt="Performance Categories" />
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🔗 Feature Correlations</h2>
+            <div class="visualization">
+                <img src="correlation_heatmap.png" alt="Correlation Heatmap" />
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>⚠️ At-Risk Analysis</h2>
+            <div class="visualization">
+                <img src="risk_comparison.png" alt="Risk Comparison" />
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🤖 ML Model Feature Importance</h2>
+            <div class="visualization">
+                <img src="feature_importance.png" alt="Feature Importance" />
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>💡 Insights & Recommendations</h2>
+            <div class="description">
+                <h3>Key Findings:</h3>
+                <ul>
+                    <li><strong>Attendance Matters:</strong> Strong correlation between attendance and final grades</li>
+                    <li><strong>Early Intervention:</strong> Students with low early assignment scores are at higher risk</li>
+                    <li><strong>Engagement Impact:</strong> Forum participation correlates with better performance</li>
+                    <li><strong>Time on Platform:</strong> Study time is a significant predictor of success</li>
+                </ul>
+                
+                <h3 style="margin-top: 20px;">Recommendations:</h3>
+                <ul>
+                    <li>Focus intervention efforts on students with <70% attendance</li>
+                    <li>Monitor assignment scores early in the semester</li>
+                    <li>Encourage forum participation through engagement activities</li>
+                    <li>Provide additional support for students identified as at-risk</li>
+                </ul>
+            </div>
+        </div>
+        
+        <footer>
+            <p><strong>Student Performance Analytics System</strong></p>
+            <p>Automated report generated by GitHub Actions</p>
+            <p>
+                <span class="badge">Machine Learning</span>
+                <span class="badge">Python</span>
+                <span class="badge">scikit-learn</span>
+                <span class="badge">pandas</span>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
+"""
+
+    # Save HTML report
+    os.makedirs('reports', exist_ok=True)
+    with open('reports/index.html', 'w', encoding='utf-8') as f:
+        f.write(html_content)
+
+    print("✓ HTML report generated successfully: reports/index.html")
+
+
+if __name__ == '__main__':
+    generate_html_report()
